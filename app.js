@@ -1,0 +1,22 @@
+const express = require("express");
+const morgan = require("morgan");
+const cors = require("cors");
+const helmet = require("helmet");
+const connectDB = require("./config/db");
+
+connectDB();
+
+const app = express();
+
+// Dev logging middleware
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
+
+// Enable CORS
+app.use(cors());
+
+// Set security headers
+app.use(helmet());
+
+module.exports = app;
