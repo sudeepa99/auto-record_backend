@@ -4,6 +4,8 @@ const cors = require("cors");
 const helmet = require("helmet");
 const connectDB = require("./config/db");
 
+const auth = require("./routes/auth");
+
 connectDB();
 
 const app = express();
@@ -18,5 +20,7 @@ app.use(cors());
 
 // Set security headers
 app.use(helmet());
+
+app.use("api/v1/auth", auth);
 
 module.exports = app;
