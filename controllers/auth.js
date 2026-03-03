@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const ErrorResponse = require("../utills/errorResponse");
 
 //Register User
 exports.register = async (req, res, next) => {
@@ -73,4 +74,36 @@ exports.getMe = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+S;
+const sendTokenResponse = (user, statusCode, res) => {
+  //Create Token
+  const token = jwt.sign({ id: user._id }, process.env.JWT_Secret, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+
+  const options = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
+    ),
+    httpOnly: true,
+  };
+
+  if (process.env.NODE_ENV === "production") {
+    options.secure = true;
+  }
+
+  res
+    .status(statusCode)
+    .cookie("token", token, options)
+    .json({
+      success: true,
+      token,
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
 };
