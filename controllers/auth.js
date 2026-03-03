@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const ErrorResponse = require("../utills/errorResponse");
 
@@ -76,7 +77,6 @@ exports.getMe = async (req, res, next) => {
   }
 };
 
-S;
 const sendTokenResponse = (user, statusCode, res) => {
   //Create Token
   const token = jwt.sign({ id: user._id }, process.env.JWT_Secret, {
@@ -106,4 +106,21 @@ const sendTokenResponse = (user, statusCode, res) => {
         role: user.role,
       },
     });
+};
+
+exports.logout = async (req, res, next) => {
+  try {
+    res.cookie("token", "", {
+      httpOnly: true,
+      expires: new Date(0),
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "User logged out successfully",
+      data: {},
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 };
